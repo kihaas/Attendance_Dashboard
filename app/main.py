@@ -23,7 +23,11 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="Attendance Dashboard", lifespan=lifespan)
-app.mount("../static", StaticFiles(directory=STATIC_DIR), name="static")
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_DIR = BASE_DIR / "static"
+
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
 @app.get("/", include_in_schema=False)
@@ -58,3 +62,8 @@ def complete_subject(subject_id: int, db: Session = Depends(get_db)):
 @app.get("/api/archive")
 def archive(db: Session = Depends(get_db)):
     return services.get_archive(db)
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attendance Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Attendance Dashboard</h1>
+      <p class="muted" id="last-updated">Данные ещё не загружались</p>
+    </div>
+    <div class="actions">
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-view="active" role="tab">Активные</button>
+        <button class="tab" data-view="archive" role="tab">Архив</button>
+      </nav>
+      <button class="btn-primary" id="sync-btn">Обновить данные</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid" id="grid"></div>
+    <p class="empty" id="empty" hidden></p>
+  </main>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
