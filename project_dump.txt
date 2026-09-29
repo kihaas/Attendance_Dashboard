@@ -1,3 +1,4 @@
+﻿--- main.py ---
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -8,7 +9,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
-from app import config, services  # noqa: F401  (config настраивает логирование)
+from app import config, services  # noqa: F401  (config РЅР°СЃС‚СЂР°РёРІР°РµС‚ Р»РѕРіРёСЂРѕРІР°РЅРёРµ)
 from app.database import get_db, init_db
 from app.journal import JournalError
 
@@ -41,20 +42,38 @@ def sync(db: Session = Depends(get_db)):
     try:
         return services.sync(db)
     except JournalError as e:
-        log.error("Ошибка журнала: %s", e)
+        log.error("РћС€РёР±РєР° Р¶СѓСЂРЅР°Р»Р°: %s", e)
         raise HTTPException(401, str(e))
     except (httpx.HTTPError, KeyError, ValueError) as e:
-        log.exception("Синхронизация не удалась")
-        raise HTTPException(502, "Не удалось обновить данные журнала. Показаны последние сохранённые данные.")
+        log.exception("РЎРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ РЅРµ СѓРґР°Р»Р°СЃСЊ")
+        raise HTTPException(502, "РќРµ СѓРґР°Р»РѕСЃСЊ РѕР±РЅРѕРІРёС‚СЊ РґР°РЅРЅС‹Рµ Р¶СѓСЂРЅР°Р»Р°. РџРѕРєР°Р·Р°РЅС‹ РїРѕСЃР»РµРґРЅРёРµ СЃРѕС…СЂР°РЅС‘РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ.")
 
 
 @app.post("/api/subjects/{subject_id}/complete")
 def complete_subject(subject_id: int, db: Session = Depends(get_db)):
     if not services.complete_subject(db, subject_id):
-        raise HTTPException(404, "Активная дисциплина не найдена.")
+        raise HTTPException(404, "РђРєС‚РёРІРЅР°СЏ РґРёСЃС†РёРїР»РёРЅР° РЅРµ РЅР°Р№РґРµРЅР°.")
     return {"status": "completed", "subject_id": subject_id}
 
 
 @app.get("/api/archive")
 def archive(db: Session = Depends(get_db)):
     return services.get_archive(db)
+
+--- pyproject.toml ---
+[project]
+name = "attendance-dashboard"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.141.1",
+    "sqlalchemy>=2.1.1",
+]
+
+
+--- README.md ---
+# Attendance_Dashboard
+Local attendance dashboard for journal. Tracks presence, calculates attendance %, and shows recommendations.
+
