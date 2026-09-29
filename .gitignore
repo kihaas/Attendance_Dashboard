@@ -3,6 +3,8 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+project_dump.txt
+
 # Python
 __pycache__/
 *.py[cod]
